@@ -90,6 +90,7 @@
     <sonar.scm.ignoreLocalModifications>true</sonar.scm.ignoreLocalModifications>
     <sonar.jacoco.reportPath>../target/jacoco.exec</sonar.jacoco.reportPath>
     <jarsigner.skip>true</jarsigner.skip>
+    <sonarlint-core.version>2.3-SNAPSHOT</sonarlint-core.version>
   </properties>
 
   <!-- These dependencies will be added to the target platform -->
@@ -97,12 +98,17 @@
     <dependency>
       <groupId>org.sonarsource.sonarlint.core</groupId>
       <artifactId>sonarlint-core</artifactId>
-      <version>2.1</version>
+      <version>${sonarlint-core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sonarsource.sonarlint.core</groupId>
       <artifactId>sonarlint-client-api</artifactId>
-      <version>2.1</version>
+      <version>${sonarlint-core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonarsource.sonarlint.core</groupId>
+      <artifactId>sonarlint-daemon-java-client</artifactId>
+      <version>${sonarlint-core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

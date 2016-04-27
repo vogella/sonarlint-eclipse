@@ -7,3 +7,5 @@ target/
 .settings
 
 org.sonarlint.eclipse.core/plugins/*.jar
+org.sonarlint.eclipse.core/daemon/*.jar
+

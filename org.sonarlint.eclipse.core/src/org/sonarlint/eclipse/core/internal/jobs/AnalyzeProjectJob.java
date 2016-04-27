@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,9 @@ import org.sonarsource.sonarlint.core.client.api.common.analysis.Issue;
 import org.sonarsource.sonarlint.core.client.api.common.analysis.IssueListener;
 import org.sonarsource.sonarlint.core.client.api.connected.ConnectedAnalysisConfiguration;
 import org.sonarsource.sonarlint.core.client.api.standalone.StandaloneAnalysisConfiguration;
+import org.sonarsource.sonarlint.daemon.proto.SonarlintDaemon.AnalysisReq;
+import org.sonarsource.sonarlint.daemon.proto.SonarlintDaemon.AnalysisReq.Builder;
+import org.sonarsource.sonarlint.daemon.proto.SonarlintDaemon.InputFile;
 
 import static org.sonarlint.eclipse.core.internal.utils.StringUtils.trimToNull;
 
@@ -397,7 +401,81 @@ public class AnalyzeProjectJob extends AbstractSonarProjectJob {
           server.startAnalysis((ConnectedAnalysisConfiguration) config, new SonarLintIssueListener(issuesPerResource));
         } else {
           StandaloneSonarLintClientFacade facadeToUse = SonarLintCorePlugin.getDefault().getDefaultSonarLintClientFacade();
-          facadeToUse.startAnalysis(config, new SonarLintIssueListener(issuesPerResource));
+          Builder builder = AnalysisReq.newBuilder();
+
+          for (ClientInputFile inputFile : config.inputFiles()) {
+            InputFile file = InputFile.newBuilder()
+              .setCharset(inputFile.getCharset().name())
+              .setPath(inputFile.getPath().toAbsolutePath().toString())
+              .setIsTest(inputFile.isTest())
+              .build();
+            builder.addFile(file);
+          }
+          AnalysisReq analysisReq = builder
+            .setBaseDir(config.baseDir().toAbsolutePath().toString())
+            .setWorkDir(config.workDir().toAbsolutePath().toString())
+            .putAllProperties(config.extraProperties())
+            .build();
+          Iterator<org.sonarsource.sonarlint.daemon.proto.SonarlintDaemon.Issue> issuesIt = facadeToUse.startAnalysis(analysisReq);
+          while (issuesIt.hasNext()) {
+            final org.sonarsource.sonarlint.daemon.proto.SonarlintDaemon.Issue issue = issuesIt.next();
+            IResource r;
+            if (issue.getFilePath().length() == 0) {
+              r = request.getProject();
+            } else {
+              r = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new org.eclipse.core.runtime.Path(issue.getFilePath()));
+            }
+            if (!issuesPerResource.containsKey(r)) {
+              issuesPerResource.put(r, new ArrayList<Issue>());
+            }
+            issuesPerResource.get(r).add(new Issue() {
+
+              @Override
+              public Integer getStartLineOffset() {
+                return issue.getStartLine() != 0 ? issue.getStartLineOffset() : null;
+              }
+
+              @Override
+              public Integer getStartLine() {
+                return issue.getStartLine() != 0 ? issue.getStartLine() : null;
+              }
+
+              @Override
+              public String getSeverity() {
+                return issue.getSeverity().name();
+              }
+
+              @Override
+              public String getRuleName() {
+                return issue.getRuleName();
+              }
+
+              @Override
+              public String getRuleKey() {
+                return issue.getRuleKey();
+              }
+
+              @Override
+              public String getMessage() {
+                return issue.getMessage();
+              }
+
+              @Override
+              public ClientInputFile getInputFile() {
+                return null;
+              }
+
+              @Override
+              public Integer getEndLineOffset() {
+                return issue.getEndLine() != 0 ? issue.getEndLineOffset() : null;
+              }
+
+              @Override
+              public Integer getEndLine() {
+                return issue.getEndLine() != 0 ? issue.getEndLine() : null;
+              }
+            });
+          }
         }
       }
     };
