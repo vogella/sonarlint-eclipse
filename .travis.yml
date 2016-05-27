@@ -26,6 +26,8 @@ cache:
 
 notifications:
   email: false
+  webhooks:
+    - secure: "oNDHZMLnenJYUTgbY55dqaTx7uMhEElRylh3S45JNZyI309lHYqMqqLUwsA2Uz3ebptp9dAEA0eHrY6HQ2oxwIQG7VJxYuY3KtBQxpFdcB2POayUoYA/qLgG/X/AOt7T1omEiYff/KXi1STo3MTQshgBDcYd07Bf9J38q8U1A/w="
 
 addons:
   apt:

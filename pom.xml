@@ -90,6 +90,8 @@
     <sonar.scm.ignoreLocalModifications>true</sonar.scm.ignoreLocalModifications>
     <sonar.jacoco.reportPath>../target/jacoco.exec</sonar.jacoco.reportPath>
     <jarsigner.skip>true</jarsigner.skip>
+    
+    <gitRepositoryName>sonarlint-eclipse</gitRepositoryName>
   </properties>
 
   <!-- These dependencies will be added to the target platform -->
@@ -172,6 +174,26 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-repository-plugin</artifactId>
           <version>${tycho.version}</version>
+        </plugin>
+        <!-- Only deploy the update site -->
+        <plugin>
+          <groupId>org.jfrog.buildinfo</groupId>
+          <artifactId>artifactory-maven-plugin</artifactId>
+          <version>${version.artifactory.plugin}</version>
+          <executions>
+            <execution>
+              <id>build-info</id>
+              <goals>
+                <goal>publish</goal>
+              </goals>
+              <configuration>
+                <publisher>
+                  <excludePatterns>*sonarlint-eclipse-parent*,*org.sonarlint.eclipse.core*,*org.sonarlint.eclipse.feature*,*org.sonarlint.eclipse.jdt*,*org.sonarlint.eclipse.ui*,*target-platform-e*</excludePatterns>
+                  <filterExcludedArtifactsFromBuild>true</filterExcludedArtifactsFromBuild>
+                </publisher>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
