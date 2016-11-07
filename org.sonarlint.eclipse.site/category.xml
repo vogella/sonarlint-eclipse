@@ -7,7 +7,7 @@
       <category name="SonarLint for Eclipse Optional Configuration Helpers"/>
    </feature>
    <feature url="features/org.sonarlint.eclipse.cdt.feature_0.0.0.jar" id="org.sonarlint.eclipse.cdt.feature" version="0.0.0">
-      <category name="SonarLint for Eclipse Optional Configuration Helpers for CDT"/>
+      <category name="SonarLint for Eclipse Optional Configuration Helpers"/>
    </feature>
    <feature url="features/org.sonarlint.eclipse.feature_0.0.0.qualifier.jar" id="org.sonarlint.eclipse.feature" version="0.0.0">
       <category name="SonarLint for Eclipse"/>
@@ -20,11 +20,6 @@
    <category-def name="SonarLint for Eclipse Optional Configuration Helpers" label="SonarLint for Eclipse Optional Configuration Helpers">
       <description>
          Optional components used to simplify/automate configuration of SonarLint analysis properties
-      </description>
-   </category-def>
-   <category-def name="SonarLint for Eclipse Optional Configuration Helpers for CDT" label="SonarLint for Eclipse Optional Configuration Helpers for CDT">
-      <description>
-         Optional components used to simplify/automate configuration of SonarLint analysis properties with CDT
       </description>
    </category-def>
 </site>
