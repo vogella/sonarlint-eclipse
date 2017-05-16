@@ -36,5 +36,5 @@ CALLSTACK:$(Get-PSCallStack | Out-String)
 
 InstallAppveyorTools
 
-mvn verify "--batch-mode" "-B" "-e" "-V"
+mvn verify "-B" "-e" "-V" "-Dtycho.disableP2Mirrors=true"
 CheckLastExitCode
