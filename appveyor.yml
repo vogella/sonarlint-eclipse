@@ -6,6 +6,7 @@ install:
   - choco install maven -y --allow-empty-checksums -version %MAVEN_VERSION%
   - set PATH=%PATH%;C:\bin\apache-maven-%MAVEN_VERSION%\bin
   - set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
 
 build_script:
   - ps: ./appveyor.ps1

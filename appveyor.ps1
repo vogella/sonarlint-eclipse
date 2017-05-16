@@ -18,6 +18,27 @@ function InstallAppveyorTools
 	}
 	echo "Installing Travis Utils public Maven settings.xml into $mavenLocal"
 	Copy-Item "$localPath\travis-utils-$travisUtilsVersion\m2\settings-public.xml" "$mavenLocal\settings.xml"
+
+	if (!(Test-Path env:\APPVEYOR_HTTP_PROXY_PORT)) {
+		# No proxy port set in environment
+		Write-Host "Skip writing proxy in maven settings file, no proxy set" -ForegroundColor Yellow
+		return
+	}
+
+	Get-Content "$mavenLocal\settings.xml" | select-string -pattern '</settings>' -notmatch | Out-File "$mavenLocal\settings.xml"
+
+	$mavenProxyConfig = '
+	<proxies>
+		<proxy>
+		<active>true</active>
+		<protocol>http</protocol>
+		<host>' + $env:APPVEYOR_HTTP_PROXY_IP + '</host>
+		<port>' + $env:APPVEYOR_HTTP_PROXY_PORT + '</port>
+		</proxy>
+	</proxies>
+	</settings>'
+
+	Add-Content "$mavenLocal\settings.xml" $mavenProxyConfig
 }
 
 function CheckLastExitCode
